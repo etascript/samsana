@@ -1,32 +1,60 @@
 var express = require('express');
 var router = express.Router();
 var controller = require('../src/components/usuarios/controller');
-
+var response = require('../src/helpers/response');
 
 router.get('/', (req, res) => {
-    res.send('Get Usuarios');
+    controller.getAll()
+    .then((data) => {
+        response.success(req, res, data, 200);
+    })
+    .catch((err) => {
+        response.error(req, res, 'Info Inválida', 400, err);
+    })
 });
 
 
 router.get('/:id', (req, res) => {
     const id = req.params.id;
+    console.log(id)
     controller.getOneUser(id)
-    .then(respuesta =>{
-        res.send(respuesta)
+    .then((data) => {
+        response.success(req, res, data, 200);
     })
-    .catch(err =>{
-        res.send(err);
+    .catch((err) => {
+        response.error(req, res, 'Info Inválida', 400, err);
     })
 });
 
 router.post('/registro', (req, res)=>{
     const data = req.body;
     controller.saveUser(data)
-    .then(respuesta =>{
-        res.send(respuesta)
+    .then((data) => {
+        response.success(req, res, data, 200);
     })
-    .catch(err =>{
-        res.send(err);
+    .catch((err) => {
+        response.error(req, res, 'Info Inválida', 400, err);
+    })
+});
+
+router.patch('/:id', (req, res) =>{
+    const {body} = req;
+    controller.updateData(req.params.id, body)
+    .then((data) => {
+        response.success(req, res, data, 200);
+    })
+    .catch((err) => {
+        response.error(req, res, 'Info Inválida', 400, err);
+    })
+});
+
+router.delete('/:id',  (req, res) =>{
+    controller.deleteData(req.params.id)
+    .then((data) => {
+        response.success(req, res, data, 200);
+    })
+    .catch((err) => {
+        response.error(req, res, 'Info Inválida', 400, err);
     })
 });
 
